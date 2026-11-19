@@ -15,11 +15,11 @@ export const SKILLS: readonly { name: string; from: readonly Source[]; types: re
   { name: 'WISDOM', from: ['judge'], types: ['dragon', 'grass'] },
 ]
 
-/** Each skill 0 to 99: the square root of its EXP, so the first sessions show and the rest takes real work. */
+/** Each skill 0 to 99: the cube root of its EXP, the curve levels climb, so 99 takes about a level-100 Pokémon's worth of one kind of work. */
 export function skillStats(save: Pick<Save, 'expBySource'>) {
   return SKILLS.map(({ name, from, types }) => {
     const exp = from.reduce((n, src) => n + (save.expBySource[src] ?? 0), 0)
-    return { name, value: Math.min(99, Math.floor(Math.sqrt(exp))), exp, from, types }
+    return { name, value: Math.min(99, Math.floor(Math.cbrt(exp))), exp, from, types }
   })
 }
 

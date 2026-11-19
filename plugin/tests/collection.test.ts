@@ -79,11 +79,11 @@ describe('collection', () => {
       return bugs
     }
     // DEBUGGING 50 triples Bug and Poison weights; Poison takes a share of the gain, so Bug catches about double.
-    const plain = rolls(cubone()), debugger_ = rolls({ ...cubone(), expBySource: { green: 2500 } })
+    const plain = rolls(cubone()), debugger_ = rolls({ ...cubone(), expBySource: { green: 125_000 } })
     expect(debugger_ > plain * 1.8).toBe(true)
-    expect(typeBias({ expBySource: { green: 2500 } })(species(10))).toBe(3)
-    expect(typeBias({ expBySource: { green: 2500, judge: 625 } })(species(1))).toBe(4) // Bulbasaur, grass/poison: DEBUGGING and WISDOM
-    expect(typeBias({ expBySource: { green: 2500 } })(species(4))).toBe(1)
+    expect(typeBias({ expBySource: { green: 125_000 } })(species(10))).toBe(3)
+    expect(typeBias({ expBySource: { green: 125_000, judge: 15_625 } })(species(1))).toBe(4) // Bulbasaur, grass/poison: DEBUGGING and WISDOM
+    expect(typeBias({ expBySource: { green: 125_000 } })(species(4))).toBe(1)
   })
 
   test('a box entry from before per-Pokémon skills reads with none', () => {

@@ -166,12 +166,12 @@ export function renderPanel(view: PanelView): string {
   return toSvg(grid.rows.map(r => pad(r, grid.w)))
 }
 
-/** EXP behind the skills, so the bars beside the bubble show some work: each skill is the square root. */
-const SKILL_EXP = { green: 3600, commit: 1600, tool: 4900, prompt: 2500, config: 400, judge: 900 }
+/** EXP behind the skills, so the bars beside the bubble show some work: each skill is the cube root. */
+const SKILL_EXP = { green: 216_000, commit: 64_000, tool: 343_000, prompt: 125_000, config: 8000, judge: 27_000 }
 // Other trainers for the other pictures, so each shows its own mix of skills.
-const SHIPPER = { green: 900, commit: 6400, push: 1700, tool: 3600, prompt: 1600, config: 100, judge: 2500 }
-const TINKERER = { green: 400, commit: 900, tool: 6400, prompt: 4900, config: 3600, judge: 400 }
-const DEBUGGER = { green: 8100, commit: 1600, tool: 2500, prompt: 900, config: 0, judge: 1600 }
+const SHIPPER = { green: 27_000, commit: 600_000, push: 129_000, tool: 216_000, prompt: 64_000, config: 1000, judge: 125_000 }
+const TINKERER = { green: 8000, commit: 27_000, tool: 512_000, prompt: 343_000, config: 216_000, judge: 8000 }
+const DEBUGGER = { green: 729_000, commit: 64_000, tool: 125_000, prompt: 27_000, config: 0, judge: 64_000 }
 
 /** A fresh save made into `id` at `level`, part way to the next level, checked by the save parser. */
 export function sceneSave(id: number, level: number, over: Partial<Save> = {}): Save {
