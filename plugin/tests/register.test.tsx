@@ -655,7 +655,7 @@ describe('register', () => {
 
   const band = ($: Engine, maxRows = 60) => $.ui.mount({
     plugin: 'pokebuddy', surface: 'terminal', component: 'AbovePrompt',
-    props: { hasSurvey: false, isWorking: false, maxRows, bodyColumns: 195, scroll: { offset: 0, bodyRows: maxRows }, view: {} },
+    props: { hasSurvey: false, isCollapsed: false, isWorking: false, maxRows, bodyColumns: 195, scroll: { offset: 0, bodyRows: maxRows }, view: {} },
     viewport: { columns: 200, rows: 60 },
   })
   const pika = () => ({ ...freshSave([1, 2, 3, 4]), species: 25 })
@@ -700,7 +700,7 @@ describe('register', () => {
       for (const [maxRows, columns] of [[1, 40], [3, 120], [60, 200]] as const) {
         const ui = await $.ui.mount({
           plugin: 'pokebuddy', surface, component: 'AbovePrompt',
-          props: { hasSurvey: false, isWorking: false, maxRows, bodyColumns: columns - 5, scroll: { offset: 0, bodyRows: maxRows }, view: {} },
+          props: { hasSurvey: false, isCollapsed: false, isWorking: false, maxRows, bodyColumns: columns - 5, scroll: { offset: 0, bodyRows: maxRows }, view: {} },
           viewport: { columns, rows: 50 },
         })
         expect(await ui.find({ type: 'Text', text: /Lv1/ })).toBeDefined()
@@ -717,7 +717,7 @@ describe('register', () => {
       await start($)
       const ui = await $.ui.mount({
         plugin: 'pokebuddy', surface, component: 'AbovePrompt',
-        props: { hasSurvey: false, isWorking: false, maxRows: 60, bodyColumns: 195, scroll: { offset: 0, bodyRows: 60 }, view: {} },
+        props: { hasSurvey: false, isCollapsed: false, isWorking: false, maxRows: 60, bodyColumns: 195, scroll: { offset: 0, bodyRows: 60 }, view: {} },
         viewport: { columns: 200, rows: 60 },
       })
       expect(await ui.find({ type: 'Text', text: /Lv1/ })).toBeDefined()
@@ -742,7 +742,7 @@ describe('register', () => {
       expect(saved.pendingLog).toHaveLength(1)
       const ui = await $.ui.mount({
         plugin: 'pokebuddy', surface: 'desktop', component: 'AbovePrompt',
-        props: { hasSurvey: false, isWorking: false, maxRows: 60, bodyColumns: 195, scroll: { offset: 0, bodyRows: 60 }, view: {} },
+        props: { hasSurvey: false, isCollapsed: false, isWorking: false, maxRows: 60, bodyColumns: 195, scroll: { offset: 0, bodyRows: 60 }, view: {} },
         viewport: { columns: 200, rows: 60 },
       })
       expect(await ui.find({ type: 'Text', text: /from the desktop/ })).toBeDefined()
@@ -759,7 +759,7 @@ describe('register', () => {
     for (const surface of ['terminal', 'desktop'] as const) {
       const ui = await $.ui.mount({
         plugin: 'pokebuddy', surface, component: 'AbovePrompt',
-        props: { hasSurvey: false, isWorking: false, maxRows: 60, bodyColumns: 195, scroll: { offset: 0, bodyRows: 60 }, view: {} },
+        props: { hasSurvey: false, isCollapsed: false, isWorking: false, maxRows: 60, bodyColumns: 195, scroll: { offset: 0, bodyRows: 60 }, view: {} },
         viewport: { columns: 200, rows: 60 },
       })
       expect(await ui.find({ type: 'Svg' }) !== undefined).toBe(surface === 'desktop')
@@ -774,6 +774,9 @@ describe('register', () => {
     props: { title: 'pokebuddy', isFocused: true, bodyColumns, placement: 'inline', scroll: { offset: 0, bodyRows: 30 }, view: {} },
     viewport: { columns: 120, rows: 40 },
   })
+  // Svgs matched on their alt text, which ElementQuery has no field for.
+  const hasSvg = async (ui: Awaited<ReturnType<typeof pane>>, alt: string) =>
+    (await ui.findAll({ type: 'Svg' })).some(e => e.props.alt === alt)
 
   test('bare /buddy opens the panel, and the stats as text where it cannot be placed', async ($, on) => {
     world(on, { save: pika() })
@@ -835,18 +838,18 @@ describe('register', () => {
       expect(await ui.find({ type: 'Text', text: ' ELECTRIC ' }) !== undefined).toBe(surface === 'desktop')
       expect(await ui.find({ type: 'Text', text: /^Lv \d+$/ })).toBeDefined()
       // Each next stone on its own line with its icon: pixels in the app, a ◆ in the terminal.
-      expect(await ui.find({ type: 'Svg', alt: 'THUNDER STONE' }) !== undefined).toBe(surface === 'desktop')
+      expect(await hasSvg(ui, 'THUNDER STONE')).toBe(surface === 'desktop')
       expect(await ui.find({ type: 'Text', text: 'config edits' })).toBeDefined()
       await ui.press({ key: 'tab:box' })
       // The app draws the box as a PC box of cards, each with its sprite; the terminal as numbered rows.
       if (surface === 'desktop') {
         expect(await ui.find({ type: 'Text', text: 'BOX 1' })).toBeDefined()
         expect(await ui.find({ type: 'Text', text: 'GASTLY ★' })).toBeDefined()
-        expect(await ui.find({ type: 'Svg', alt: 'GASTLY sprite' })).toBeDefined()
+        expect(await hasSvg(ui, 'GASTLY sprite')).toBe(true)
       } else expect(await ui.find({ type: 'Text', text: /1\. GASTLY ★  Lv 1/ })).toBeDefined()
       await ui.press({ key: 'tab:dex' })
       expect(await ui.find({ type: 'Text', text: /OWN 2\/151/ })).toBeDefined()
-      expect(await ui.find({ type: 'Svg', alt: 'Pokédex lens' }) !== undefined).toBe(surface === 'desktop')
+      expect(await hasSvg(ui, 'Pokédex lens')).toBe(surface === 'desktop')
       await ui.press({ key: 'tab:commands' })
       expect(await ui.find({ type: 'Text', text: /Typed commands/ })).toBeDefined()
       expect(await ui.find({ type: 'Text', text: /Esc to close/ }) !== undefined).toBe(surface === 'terminal')
@@ -902,9 +905,9 @@ describe('register', () => {
     await ui.press({ key: 'tab:box' })
     expect(await ui.find({ type: 'Text', text: /1\. GASTLY  Lv 1/ })).toBeDefined()
     await ui.press({ key: 'tab:dex' })
-    expect(await ui.find({ type: 'Svg', alt: 'Pokédex lens' })).toBeUndefined()
+    expect(await hasSvg(ui, 'Pokédex lens')).toBe(false)
     await ui.press({ key: 'dex:25' })
-    expect(await ui.find({ type: 'Svg', alt: 'PIKACHU sprite' })).toBeDefined()
+    expect(await hasSvg(ui, 'PIKACHU sprite')).toBe(true)
     await ui.unmount()
   })
 

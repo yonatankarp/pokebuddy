@@ -6,6 +6,7 @@ declare module 'claude-code' {
     desktop: { Box: Element; Text: Element; Svg: Element; Markdown: Element }
   }
   type RenderSurface = 'terminal' | 'desktop' | 'mobile' | 'vscode'
+  type RenderChildren = unknown
 }
 declare function h(type: unknown, props: object | null, ...children: unknown[]): unknown
 declare function Fragment(props: object): unknown

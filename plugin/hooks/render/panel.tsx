@@ -1,4 +1,4 @@
-import type { Elements } from 'claude-code'
+import type { Elements, RenderChildren } from 'claude-code'
 import { COMMAND_HELP, evolutionHints, feedStreak, stoneProgress } from '../commands'
 import { COMMAND } from '../config'
 import { POKEDEX } from '../data/pokedex.generated'
@@ -273,7 +273,7 @@ const CARD_SLOT = 96
 /** The app's box: a PC box, a card per Pokémon on the wallpaper, the buddy's first. */
 function pcBox(els: PanelElements, { save, releasing }: PanelView, act: PanelActions) {
   const { Box, Text, Button } = els
-  const card = (key: string, m: Save | Save['box'][number], isBuddy: boolean, acts: unknown) => (
+  const card = (key: string, m: Save | Save['box'][number], isBuddy: boolean, acts: RenderChildren) => (
     <Box key={key} flexDirection="column" alignItems="center" width={26} marginRight={1} marginBottom={1} paddingX={1}
       backgroundColor={WHITE} borderStyle="round" borderColor={isBuddy ? CASE : PC_EDGE}>
       {speciesArt(els, species(m.species), m.isShiny, true, 3, CARD_SLOT)}
@@ -306,7 +306,7 @@ function pcBox(els: PanelElements, { save, releasing }: PanelView, act: PanelAct
 }
 
 /** The app's Pokédex: the red case with its lens and lights, the page on a screen in it, its buttons under the screen. */
-function dexShell({ Box, Text, Svg }: PanelElements, own: string, screen: unknown, pager: unknown) {
+function dexShell({ Box, Text, Svg }: PanelElements, own: string, screen: RenderChildren, pager: RenderChildren) {
   return [
     <Box key="shell" flexDirection="column" backgroundColor={CASE} borderStyle="round" borderColor={CASE_EDGE} paddingX={2} paddingY={1}>
       <Box key="lid" flexDirection="row" alignItems="center" justifyContent="space-between">
