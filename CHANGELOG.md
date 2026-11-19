@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.5.5 (2026-11-19)
+
+- Skills no longer max out halfway through the game. Each was the square root of its EXP, so 9,801 EXP of one kind of work reached 99, a fraction of what level 30 takes, and most skills of a level-50 Pokémon sat at 99. Now each is the cube root, the curve levels climb, so 99 takes about 970,000 EXP of one kind of work. Existing skills drop to match (a 99 from 50,000 EXP is now 36), and so do their EXP bonus and their pull on wild Pokémon. No EXP is lost.
+
 ## 1.5.4 (2026-10-24)
 
 - `/buddy box` and `/buddy dex` now open the panel on the Box and Pokédex tabs, and `/buddy dex pikachu` opens that entry when you've caught it. The desktop app currently ignores clicks on the panel's buttons, so the tabs can't be switched there; typing reaches each one meanwhile. A Pokémon you haven't caught, and a session with nowhere to draw the panel, still get the text reply.

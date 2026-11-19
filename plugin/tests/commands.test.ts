@@ -32,20 +32,20 @@ describe('commands', () => {
     expect(t).toContain('Thunder Stone 0/10 green checks')
   })
   test('stats skips EXP sources this version does not know', () => {
-    const s = { ...freshSave([1, 2, 3, 4]), expBySource: { prompt: 10, bogus: 5 } as Record<string, number> }
+    const s = { ...freshSave([1, 2, 3, 4]), expBySource: { prompt: 27, bogus: 5 } as Record<string, number> }
     const t = statsText(s, '2026-10-11')
-    expect(t).toContain('FOCUS      3  10 EXP from prompts, active time; +1% EXP, draws PSYCHIC/FIGHTING')
+    expect(t).toContain('FOCUS      3  27 EXP from prompts, active time; +1% EXP, draws PSYCHIC/FIGHTING')
     expect(t).not.toContain('undefined')
   })
-  test('skills grow from the EXP of their work, as its square root, capped at 99; feeding grows none', () => {
-    const s = { ...freshSave([1, 2, 3, 4]), expBySource: { green: 400, commit: 60, push: 40, tool: 99_999, feed: 5000 } }
+  test('skills grow from the EXP of their work, as its cube root, capped at 99; feeding grows none', () => {
+    const s = { ...freshSave([1, 2, 3, 4]), expBySource: { green: 8000, commit: 600, push: 400, tool: 999_999, feed: 5000 } }
     expect(skillStats(s).map(k => [k.name, k.value, k.exp])).toEqual([
-      ['DEBUGGING', 20, 400], ['SHIPPING', 10, 100], ['HACKING', 99, 99_999],
+      ['DEBUGGING', 20, 8000], ['SHIPPING', 10, 1000], ['HACKING', 99, 999_999],
       ['FOCUS', 0, 0], ['TINKERING', 0, 0], ['WISDOM', 0, 0],
     ])
     const t = statsText(s, '2026-10-11')
-    expect(t).toContain('  DEBUGGING 20  400 EXP from green checks; +10% EXP, draws BUG/POISON')
-    expect(t).toContain('  SHIPPING  10  100 EXP from commits, pushes and PRs')
+    expect(t).toContain('  DEBUGGING 20  8000 EXP from green checks; +10% EXP, draws BUG/POISON')
+    expect(t).toContain('  SHIPPING  10  1000 EXP from commits, pushes and PRs')
     expect(t).toContain('  Feeding: 5000 EXP')
     expect(t).not.toContain('EXP by source')
   })

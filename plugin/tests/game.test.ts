@@ -52,9 +52,9 @@ describe('game', () => {
     expect(r.save.expBySource.prompt).toBe(10)
   })
   test('a skill adds half its value, in percent, to the EXP of its own work; feeding gets none', () => {
-    const s = as(4, 10, { expBySource: { green: 900, feed: 10_000 } }) // DEBUGGING 30
+    const s = as(4, 10, { expBySource: { green: 27_000, feed: 10_000 } }) // DEBUGGING 30
     const r = applyExp(s, { green: 100, tool: 100, feed: 100 })
-    expect([r.save.expBySource.green, r.save.expBySource.tool, r.save.expBySource.feed]).toEqual([1015, 100, 10_100])
+    expect([r.save.expBySource.green, r.save.expBySource.tool, r.save.expBySource.feed]).toEqual([27_115, 100, 10_100])
     expect(r.save.lifetimeExp).toBe(s.lifetimeExp + 315)
   })
   test('ten commits across turns earns a Fire Stone', () => {
